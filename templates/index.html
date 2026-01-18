@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero bg-white rounded-4 shadow-sm p-4 p-lg-5 mb-4">
+  <div class="row align-items-center">
+    <div class="col-lg-7">
+      <p class="text-uppercase text-success fw-semibold mb-2">Food Rescue Platform</p>
+      <h1 class="display-5 fw-bold">Track, redistribute, and celebrate zero waste</h1>
+      <p class="lead text-muted mb-4">FoodWise unifies your kitchen inventory, surplus food logs, and donation efforts so every cooked meal reaches a plate.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-success btn-lg" href="{{ url_for('inventory_page') }}">Manage Inventory</a>
+        <a class="btn btn-outline-success btn-lg" href="{{ url_for('analytics_page') }}">View Analytics</a>
+      </div>
+    </div>
+    <div class="col-lg-5 text-center mt-4 mt-lg-0">
+      <div class="stats-card rounded-4 p-4 bg-success-subtle">
+        <p class="text-uppercase small fw-semibold text-success">Impact snapshot</p>
+        <div class="row g-3" id="impact-summary">
+          <div class="col-4">
+            <div class="impact-value" data-metric="total_inventory">0</div>
+            <div class="impact-label">kg prepared</div>
+          </div>
+          <div class="col-4">
+            <div class="impact-value" data-metric="total_donated">0</div>
+            <div class="impact-label">kg donated</div>
+          </div>
+          <div class="col-4">
+            <div class="impact-value" data-metric="total_wasted">0</div>
+            <div class="impact-label">kg surplus</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="row g-4">
+  <div class="col-md-4">
+    <div class="feature-card h-100">
+      <h5>Inventory excellence</h5>
+      <p>Quickly register every batch, monitor remaining portions, and flag what needs to move first.</p>
+      <a class="stretched-link text-success fw-semibold" href="{{ url_for('inventory_page') }}">Open inventory</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card h-100">
+      <h5>No-waste protocol</h5>
+      <p>Structured surplus food logs explain why food left circulation, guiding smarter prep decisions.</p>
+      <a class="stretched-link text-success fw-semibold" href="{{ url_for('surplus_food_page') }}">Log surplus food</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card h-100">
+      <h5>Donation automation</h5>
+      <p>Match surplus to partner NGOs with a few clicks and track every kilogram that makes a difference.</p>
+      <a class="stretched-link text-success fw-semibold" href="{{ url_for('donations_page') }}">Record donation</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

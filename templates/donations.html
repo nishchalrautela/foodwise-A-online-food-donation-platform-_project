@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted small mb-1">Redistribution</p>
+    <h2 class="fw-bold mb-0">Connect surplus with partner NGOs</h2>
+  </div>
+  <div class="text-muted">Capture every kilogram that leaves your kitchen with purpose.</div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="form-section h-100">
+      <h5 class="fw-semibold mb-3">Record donation</h5>
+      <form id="donationForm" class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Inventory batch</label>
+          <select class="form-select" id="d_inventory"></select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">NGO partner</label>
+          <select class="form-select" id="d_ngo"></select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Quantity (kg)</label>
+          <input class="form-control" id="d_quantity" type="number" min="0" step="0.1" required>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary w-100" type="submit">Record donation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card card-shadow border-0 h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Recent donations</h5>
+          <button class="btn btn-sm btn-outline-secondary" id="refreshDonations">Refresh</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-0" id="donationTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Inventory</th>
+                <th>NGO</th>
+                <th>Quantity</th>
+                <th>Donated at</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/donations.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted small mb-1">Inventory hub</p>
+    <h2 class="fw-bold mb-0">Live production tracker</h2>
+  </div>
+  <div class="text-muted">Monitor prepared batches, remaining servings, and take action instantly.</div>
+</div>
+<div class="row g-3 mb-4" id="inventorySummary">
+  <div class="col-md-4">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Total batches</p>
+        <div class="h3 mb-0" data-summary="count">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Total quantity (kg)</p>
+        <div class="h3 mb-0" data-summary="quantity">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Remaining stock (kg)</p>
+        <div class="h3 mb-0" data-summary="remaining">0</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mb-4">
+  <div class="col-lg-5">
+    <div class="form-section h-100">
+      <h5 class="fw-semibold mb-3">Add prepared batch</h5>
+      <form id="inventoryForm" class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Item type</label>
+          <input required class="form-control" id="item_type" placeholder="e.g. Veg Biryani">
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Quantity (kg)</label>
+          <input required min="0" step="0.1" class="form-control" id="quantity" type="number">
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Date prepared</label>
+          <input class="form-control" id="date_prepared" type="date">
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="item_category">
+            <option value="Human">Human meals</option>
+            <option value="Pet">Pet / animal shelter</option>
+          </select>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Restaurant source (optional)</label>
+          <select class="form-select" id="item_platform">
+            <option value="">Prepared in-house</option>
+            {% for platform in platforms %}
+            <option value="{{ platform.id }}">{{ platform.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-success w-100">Save batch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="form-section h-100">
+      <h5 class="fw-semibold mb-3">Filter & search</h5>
+      <form id="inventoryFilters" class="row g-3">
+        <div class="col-sm-6">
+          <label class="form-label">Search by name</label>
+          <input class="form-control" id="filterSearch" placeholder="Keyword">
+        </div>
+        <div class="col-sm-4">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="filterStatus">
+            <option value="">All</option>
+            <option value="Available">Available</option>
+            <option value="Donated">Donated</option>
+            <option value="Surplus">Surplus</option>
+          </select>
+        </div>
+        <div class="col-sm-4">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="filterCategory">
+            <option value="">All</option>
+            <option value="Human">Human</option>
+            <option value="Pet">Pet</option>
+          </select>
+        </div>
+        <div class="col-sm-2 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100" type="submit">Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="card card-shadow border-0">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0" id="invTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Item</th>
+          <th>Prepared</th>
+          <th>Category</th>
+          <th>Total (kg)</th>
+          <th>Remaining (kg)</th>
+          <th>Source</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="p-4 text-center text-muted d-none" id="inventoryEmpty">No inventory yet. Add your first batch!</div>
+  </div>
+</div>
+
+<div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="inventoryEditForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inventoryModalLabel">Update batch</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit_id">
+        <div class="mb-3">
+          <label class="form-label">Item type</label>
+          <input class="form-control" id="edit_item_type" required>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label class="form-label">Total quantity (kg)</label>
+            <input class="form-control" type="number" step="0.1" min="0" id="edit_quantity" required>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Remaining (kg)</label>
+            <input class="form-control" type="number" step="0.1" min="0" id="edit_remaining" required>
+          </div>
+        </div>
+        <div class="mt-3">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="edit_status">
+            <option value="Available">Available</option>
+            <option value="Donated">Donated</option>
+            <option value="Surplus">Surplus</option>
+          </select>
+        </div>
+        <div class="mt-3">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="edit_category">
+            <option value="Human">Human</option>
+            <option value="Pet">Pet</option>
+          </select>
+        </div>
+        <div class="mt-3">
+          <label class="form-label">Restaurant source (optional)</label>
+          <select class="form-select" id="edit_platform">
+            <option value="">Prepared in-house</option>
+            {% for platform in platforms %}
+            <option value="{{ platform.id }}">{{ platform.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mt-3">
+          <label class="form-label">Date prepared</label>
+          <input class="form-control" type="date" id="edit_date">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
+{% endblock %}

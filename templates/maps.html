@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted small mb-1">Location finder</p>
+    <h2 class="fw-bold mb-0">Find nearby NGOs and Food Platforms</h2>
+  </div>
+  <div class="text-muted">Locate partner organizations and food distribution centers on the map.</div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card card-shadow border-0 h-100">
+      <div class="card-body">
+        <h5 class="fw-semibold mb-3">Filter locations</h5>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="filterNGOs" checked>
+            <label class="form-check-label fw-semibold text-success" for="filterNGOs">
+              NGOs ({{ '{:,}'.format(ngos_count if ngos_count else 0) }})
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="filterPlatforms" checked>
+            <label class="form-check-label fw-semibold text-primary" for="filterPlatforms">
+              Food Platforms ({{ '{:,}'.format(platforms_count if platforms_count else 0) }})
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="d-grid gap-2">
+          <button class="btn btn-outline-secondary btn-sm" id="locateMe">
+            <i class="bi bi-geo-alt"></i> Use my location
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" id="fitBounds">
+            Show all locations
+          </button>
+        </div>
+        <hr>
+        <div id="locationList" class="small">
+          <p class="text-muted mb-2">Loading locations...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="card card-shadow border-0">
+      <div class="card-body p-0">
+        {% if google_maps_key %}
+        <div id="map" style="height: 600px; width: 100%;"></div>
+        {% else %}
+        <div class="p-5 text-center bg-light">
+          <p class="text-muted mb-3">
+            <strong>Google Maps API key not configured.</strong>
+          </p>
+          <p class="small text-muted">
+            To enable maps, set the <code>GOOGLE_MAPS_API_KEY</code> environment variable<br>
+            or add it to your <code>.env</code> file.
+          </p>
+          <p class="small text-muted mt-2">
+            Get your API key from <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a>
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% if google_maps_key %}
+<script>
+  let mapsLoadError = false;
+  
+  // Add callback to ensure maps loads before our script runs
+  function initMaps() {
+    if (typeof google !== 'undefined' && google.maps) {
+      // Load maps.js after Google Maps is ready
+      const script = document.createElement('script');
+      script.src = "{{ url_for('static', filename='js/maps.js') }}";
+      script.onerror = function() {
+        showMapError('Failed to load maps script. Please refresh the page.');
+      };
+      document.body.appendChild(script);
+    } else {
+      showMapError('Google Maps API failed to load. Please check your API key and ensure "Maps JavaScript API" is enabled in Google Cloud Console.');
+    }
+  }
+  
+  function showMapError(message) {
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+      mapElement.innerHTML = 
+        '<div class="p-5 text-center bg-light">' +
+        '<p class="text-danger mb-2"><strong>Error loading Google Maps</strong></p>' +
+        '<p class="small text-muted mb-3">' + message + '</p>' +
+        '<p class="small text-muted">Check the browser console (F12) for more details.</p>' +
+        '<p class="small mt-3"><a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="btn btn-sm btn-outline-primary">Get API Key</a></p>' +
+        '</div>';
+    }
+  }
+  
+  // Timeout fallback if callback never fires
+  setTimeout(function() {
+    if (typeof google === 'undefined' && !mapsLoadError) {
+      mapsLoadError = true;
+      showMapError('Google Maps API did not load in time. Please check your API key and network connection.');
+    }
+  }, 10000);
+</script>
+<script 
+  src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_key }}&libraries=places&callback=initMaps"
+  async 
+  defer
+  onerror="mapsLoadError=true; showMapError('Failed to load Google Maps script. Check your API key.');">
+</script>
+{% else %}
+<script>
+  console.warn('Google Maps API key not configured');
+</script>
+{% endif %}
+{% endblock %}
+

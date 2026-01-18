@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted small mb-1">Impact dashboard</p>
+    <h2 class="fw-bold mb-0">Data-backed sustainability</h2>
+  </div>
+  <div class="text-muted">Track prepared stock, donations, and surplus food trends in one view.</div>
+</div>
+<div class="row g-3 mb-4" id="analyticsSummary">
+  <div class="col-md-3">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Total produced</p>
+        <div class="h3 mb-0" data-metric="total_inventory">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Remaining stock</p>
+        <div class="h3 mb-0" data-metric="total_remaining">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Donated</p>
+        <div class="h3 mb-0 text-success" data-metric="total_donated">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-shadow border-0">
+      <div class="card-body">
+        <p class="text-uppercase small text-muted mb-1">Surplus</p>
+        <div class="h3 mb-0 text-danger" data-metric="total_wasted">0</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card card-shadow border-0 mb-4">
+  <div class="card-body">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+      <h5 class="mb-0">Totals overview</h5>
+      <div class="d-flex gap-2 align-items-center">
+        <label class="form-label mb-0 small text-muted">Trend window</label>
+        <select class="form-select form-select-sm" id="trendRange">
+          <option value="7">Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <canvas id="totalsChart" height="280"></canvas>
+      </div>
+      <div class="col-lg-6">
+        <canvas id="trendChart" height="280"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card card-shadow border-0">
+  <div class="card-body">
+    <h5 class="mb-3">Latest donations vs surplus food</h5>
+    <div class="table-responsive">
+      <table class="table mb-0" id="analyticsTable">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Inventory ID</th>
+            <th>Quantity</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

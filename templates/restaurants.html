@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted small mb-1">Restaurant portal</p>
+    <h2 class="fw-bold mb-0">Log surplus meals for redistribution</h2>
+  </div>
+  <div class="text-muted">Register your leftover meals so nearby NGOs can fulfil current requests.</div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="form-section h-100">
+      <h5 class="fw-semibold mb-3">Submit leftovers</h5>
+      <form id="restaurantForm" class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Restaurant / kitchen</label>
+          <select class="form-select" id="platform_id" required>
+            <option value="">Choose a restaurant</option>
+            {% for platform in platforms %}
+            <option value="{{ platform.id }}">{{ platform.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Food item</label>
+          <input class="form-control" id="item_type" placeholder="e.g. Veg Curry" required>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Quantity (kg)</label>
+          <input class="form-control" id="quantity" type="number" min="0" step="0.1" required>
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="category">
+            <option value="Human">For humans</option>
+            <option value="Pet">For pets / animal shelters</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Date prepared</label>
+          <input class="form-control" id="date_prepared" type="date">
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary w-100" type="submit">Submit leftovers</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card card-shadow border-0 h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Recent restaurant submissions</h5>
+          <button class="btn btn-outline-secondary btn-sm" id="refreshRestaurantInv">Refresh</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-0" id="restaurantTable">
+            <thead>
+              <tr>
+                <th>Restaurant</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>Prepared</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="p-4 text-center text-muted d-none" id="restaurantEmpty">No submissions yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-shadow border-0 mt-4">
+  <div class="card-body">
+    <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 mb-3">
+      <div>
+        <h5 class="mb-0">NGO requests queue</h5>
+        <p class="text-muted small mb-0">Claim open requests so NGOs know a restaurant is preparing food.</p>
+      </div>
+      <div class="ms-md-auto d-flex gap-2">
+        <select class="form-select form-select-sm" id="restaurantRequestFilter" style="max-width: 200px;">
+          <option value="">All types</option>
+          <option value="Human">Human</option>
+          <option value="Pet">Pet</option>
+        </select>
+        <button class="btn btn-outline-secondary btn-sm" id="refreshRestaurantRequests">Refresh</button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table mb-0" id="restaurantRequestsTable">
+        <thead>
+          <tr>
+            <th>NGO</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Urgency</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="p-4 text-center text-muted d-none" id="restaurantRequestsEmpty">All requests are fulfilled!</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/restaurants.js') }}"></script>
+{% endblock %}
+

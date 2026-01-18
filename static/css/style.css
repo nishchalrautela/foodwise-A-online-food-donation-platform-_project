@@ -1,0 +1,92 @@
+:root {
+  --fw-success: #2e8b57;
+  --fw-accent: #f4fdf7;
+  --fw-muted: #6c757d;
+}
+
+body {
+  padding-top: 0;
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.hero {
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.stats-card {
+  background: linear-gradient(135deg, #e8f7ef, #ffffff);
+}
+
+.impact-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--fw-success);
+}
+
+.impact-label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--fw-muted);
+  letter-spacing: 0.05em;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.08);
+}
+
+.feature-card h5 {
+  font-weight: 700;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.status-pill.available {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.status-pill.donated {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.status-pill.wasted {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.card-shadow {
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: #fff;
+  padding: 1.5rem;
+}
